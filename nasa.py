@@ -65,7 +65,7 @@ class MSL_Images():
         
         # there is data from the last instrument to push!
         if len(images) > 0:
-          instruments.append({"name": instrument_name, "images": images})
+          instruments.append({"instrument_name": instrument_name, "images": images})
           images = []
           
       else:
@@ -96,6 +96,6 @@ class MSL_Images():
           images.append({"rawid": raw_id, "thumb": thumbnail, "datetime": dt.isoformat()})
           
     if len(images) > 0:
-      instruments.append({"name": instrument_name, "images": images})
+      instruments.append({"instrument_name": instrument_name, "images": images})
 
     return instruments
