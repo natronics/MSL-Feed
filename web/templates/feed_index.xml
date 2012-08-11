@@ -1,0 +1,5 @@
+$def with (feeds)
+<feeds>
+$for feed in feeds: 
+    <feed href="/feeds/${feed}.xml" />
+</feeds>

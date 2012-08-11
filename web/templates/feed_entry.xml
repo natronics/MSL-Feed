@@ -1,0 +1,17 @@
+$def with (items)
+
+$for i in range(10):
+  <entry>
+	    <author>
+			  <name>MSL Bot</name>
+		    <uri>FIXME</uri>
+		  </author>
+		  <title type="text">FIXME</title>
+		  <id>$i</id>
+		  <published>FIXME</published>
+		  <updated>FIXME</updated>
+		
+		  <content type="html"><![CDATA[ <img src="FIXME" /> ]]></content>
+		  <link rel="enclosure" type="image/jpeg" href="FIXME" />
+		  <link rel="license" type="text/html" href="http://creativecommons.org/publicdomain/mark/1.0/" />
+  </entry>

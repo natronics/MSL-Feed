@@ -1,0 +1,13 @@
+$def with (title, desc, feed_items)
+<feed
+  xmlns="http://www.w3.org/2005/Atom"
+  xml:lang="en-US" >
+  
+  <title type="text">FIXME</title>
+	<subtitle type="text">FIXME</subtitle>
+	<updated>FIXME</updated>
+	<id>FIXME</id>
+  
+  $:feed_items
+  
+</feed>
