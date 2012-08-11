@@ -11,7 +11,7 @@ urls = (
 
 class Index:
   def GET(self):
-    return view.render.base("", title="MSL Feeds")
+    return view.render.base(view.render.front_page(), title="MSL Feeds")
 
 class Feeds_Index:
   def GET(self):
@@ -21,7 +21,8 @@ class Feeds_Index:
 
 class Feed:
   def GET(self, feedname):
-    items = view.render.feed_entry("")
+    f = models.get_feed('msl-all-feed-nothumb')
+    items = view.render.feed_entry(f)
     feed = view.render.feed("","",items)
     return view.render.base_xml(feed)
 

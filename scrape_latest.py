@@ -49,6 +49,7 @@ def add_image(sol, instrument, isThumb, storeobj):
 scraper = nasa.MSL_Images()
 data    = scraper.get_images()
 
+
 # Go through data
 for sol_num, sol in enumerate(data['sols']):
   for instrument in sol:
@@ -57,12 +58,13 @@ for sol_num, sol in enumerate(data['sols']):
       image_id = image['rawid']
       nasatime = image["datetime"]
       thumb    = image['thumb']
+      uri      = image['uri']
       
       # Test if we've seen this image before
       # if not, add it to redis database of images and feeds
       if not r.sismember('msl-images', image_id):
         
-        obj = json.dumps({"rawid": image_id, "nasatime": nasatime, "instrument": inst_name})
+        obj = json.dumps({"rawid": image_id, "nasatime": nasatime, "instrument": inst_name, "uri": uri})
         print "new image!!!",
         print sol_num, inst_name, thumb, obj
         
@@ -71,4 +73,4 @@ for sol_num, sol in enumerate(data['sols']):
         
         # Adds metadata to all the feeds
         add_image(sol_num, inst_name, thumb, obj)
-        
+

@@ -77,6 +77,16 @@ class MSL_Images():
           if self.verbose:
             print raw_id,
           
+          # URL
+          # Get the image url and remove thumbnail
+          image = cell.find('img')
+          src   = image['src']
+          # test for thumbnail
+          if "-thm.jpg" in src:
+            src = src[0:-8] + ".JPG"
+          if self.verbose:
+            print src,
+          
           # caption
           caption = cell.find('div', { "class" : "RawImageCaption" })
           thumbnail = True
@@ -93,7 +103,7 @@ class MSL_Images():
           if self.verbose:
             print dt
           
-          images.append({"rawid": raw_id, "thumb": thumbnail, "datetime": dt.isoformat()})
+          images.append({"rawid": raw_id, "thumb": thumbnail, "uri": src, "datetime": dt.isoformat()})
           
     if len(images) > 0:
       instruments.append({"instrument_name": instrument_name, "images": images})

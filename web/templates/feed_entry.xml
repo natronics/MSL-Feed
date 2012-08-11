@@ -1,17 +1,17 @@
 $def with (items)
 
-$for i in range(10):
+$for item in items:
   <entry>
 	    <author>
 			  <name>MSL Bot</name>
 		    <uri>FIXME</uri>
 		  </author>
-		  <title type="text">FIXME</title>
-		  <id>$i</id>
-		  <published>FIXME</published>
-		  <updated>FIXME</updated>
-		
-		  <content type="html"><![CDATA[ <img src="FIXME" /> ]]></content>
-		  <link rel="enclosure" type="image/jpeg" href="FIXME" />
+		  <title type="text">$item['title']</title>
+		  <id>$item['id']</id>
+		  <published>$item['pub']</published>
+		  <updated>$item['pub']</updated>
+
+		  <content type="html"><![CDATA[ <img src="$item['url']" /> ]]></content>
+		  <link rel="enclosure" type="image/jpeg" href="$item['url']" />
 		  <link rel="license" type="text/html" href="http://creativecommons.org/publicdomain/mark/1.0/" />
   </entry>
