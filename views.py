@@ -75,7 +75,7 @@ def front_page(feeds, peekimg):
   <meta name="author" content="natronics" />
   
   <!-- Bootstrap CSS -->
-  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     #header {
       background: #eee;
@@ -88,6 +88,19 @@ def front_page(feeds, peekimg):
 
   <!--Title-->
   <title>Latest MSL Images</title>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34037546-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
  </head>
  <body>
   
@@ -118,7 +131,7 @@ def front_page(feeds, peekimg):
           <h2>Subscribe!</h2>
           <ul>
             <li>
-              <h4><a href="feeds/msl-all-feed-nothumb.xml">Latest Images from MSL - Full Resolution Images Only</a></h4>
+              <h4><a href="/feeds/msl-all-feed-nothumb.xml">Latest Images from MSL - Full Resolution Images Only</a></h4>
             </li>
           </ul>
           <p />
@@ -138,7 +151,7 @@ def front_page(feeds, peekimg):
           
            <h2>XML list of feeds:</h2>
           <ul>
-            <li><h4><a href="index.xml">List of Feeds (xml)</a></h4></li>
+            <li><h4><a href="/index.xml">List of Feeds (xml)</a></h4></li>
           </ul>
       </div>
     </div>
@@ -150,6 +163,5 @@ def front_page(feeds, peekimg):
    </div>
    
   </div>
-  <script src="static/bootstrap/js/bootstrap.min.js"></script>
  </body>
 </html>""" % {"feeds": feeds_html, "latestimg": images_html}
