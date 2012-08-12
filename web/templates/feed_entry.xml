@@ -3,7 +3,7 @@ $def with (items)
 $for item in items:
   <entry>
 	    <author>
-			  <name>MSL Bot</name>
+			  <name>MSL Image Bot</name>
 		    <uri>FIXME</uri>
 		  </author>
 		  <title type="text">$item['title']</title>

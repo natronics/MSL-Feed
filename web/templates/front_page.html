@@ -1,13 +1,21 @@
-<div class="page-header">
-  <h1>MSL Feeds</h1>
-</div>
+$def with (feeds)
 <div class="row">
   <div class="span3">
-    <img src="http://placekitten.com/g/200/300" />
+    <img src="/static/img/msl_bot.png" />
   </div>
   <div class="span9">
     <div class="hero-unit">
-      <h3><a href="/index.xml">List of Feeds (xml)</a></h3>
+      <h2>Or Subscribe to the feeds!</h2>
+      <ul>
+        <li><h4><a href="/index.xml">List of Feeds (xml)</a></h4></li>
+      </ul>
+      <p />
+      <p />
+      <h2>Or Subscribe to one feed:</h2>
+      <ul>
+        $for feed in feeds:
+          <li><h4><a href="/feeds/${feed['feed']}.xml">${feed['title']}</a></h4></li>
+      </ul>
     </div>
   </div>
 </div>

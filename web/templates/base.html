@@ -11,33 +11,34 @@ $def with (page, title=None)
   <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" />
   <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
   <style>
-   body { padding-top: 60px; }
+    #header {
+      background: #eee;
+      border-bottom: 3px solid #08c;
+      padding-top: 40px;
+      padding-bottom: 14px;
+      margin-bottom: 30px;
+    }
   </style>
-  
-  <!-- D3 -->
-  <script type="text/javascript" src="/static/d3/d3.v2.js"></script>
-  <script type="text/javascript" src="/static/d3/graphtypes.d3.js"></script>
-  <link href="/static/d3/style.d3.css" rel="stylesheet" />
 
   <!--Title-->
   <title>\
 $if title: $title</title>
  </head>
  <body>
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-        <a class="brand" href="/">MSL Feed</a>
-      </div>
+  
+  <div id="header">
+    <div class="container">
+      <h1>MSL Feeds</h1>
     </div>
   </div>
+
   <div class="container">
 
    $:page
    
    <div class="footer">
      <hr />
-     <a href="#">Back to top</a>
+     made by <a href="https://twitter.com/natronics">@natronics</a>
      <p><br /><br /> </p>
    </div>
    

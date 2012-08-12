@@ -1,12 +1,11 @@
-$def with (title, desc, feed_items)
+$def with (title, updated, id, feed_items)
 <feed
   xmlns="http://www.w3.org/2005/Atom"
   xml:lang="en-US" >
   
-  <title type="text">FIXME</title>
-	<subtitle type="text">FIXME</subtitle>
-	<updated>FIXME</updated>
-	<id>FIXME</id>
+  <title type="text">$title</title>
+	<updated>$updated</updated>
+	<id>$id</id>
   
   $:feed_items
   
