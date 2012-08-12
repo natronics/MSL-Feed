@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import redis
+import config
 
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
+r = redis.StrictRedis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
 
 feeds = r.smembers('msl-feeds')
 
