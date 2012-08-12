@@ -1,7 +1,0 @@
-$def with (feeds)
-<feeds>
-$for feed in feeds:
-  <feed href="/feeds/${feed['feed']}.xml" 
-        title="${feed['title']}" 
-        updated="${feed['updated']}"/>
-</feeds>
