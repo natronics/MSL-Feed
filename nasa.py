@@ -72,10 +72,12 @@ class MSL_Images():
     
     # Table based layout!
     # Grab the table cell with the main content
-    content     =  soup.find('td', { "class" : "pageContent" })
+    # Broken as of Aug 14
+    #content     =  soup.find('td', { "class" : "pageContent" })
 
     # The second table is the list of images
-    image_table =  content.findAll('table')[1]
+    # apparently the table is table 5. there is no semantics to help here
+    image_table =  soup.findAll('table')[5]
 
     for row in image_table.findAll('tr'):
       cells = row.findAll('td')
