@@ -3,7 +3,14 @@ MSL-Feed
 
 Feed of images from MSL data
 
-Edit config.py
+Now live at [mars.open-notify.org](http://mars.open-notify.org)
+
+Subscribe to an RSS feed of the MSL images!
+
+
+To run yourself, have python and redis running.
+
+Edit config.py and set your redis server settings
 
 Run:
 
