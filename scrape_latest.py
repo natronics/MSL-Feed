@@ -27,12 +27,6 @@ def add_image(sol, instrument, isThumb, storeobj):
   r.sadd('msl-feeds', feed_name)
   r.set(feed_name + '-name', 'Latest Images from %s on MSL' % str(instrument).split('(')[0].strip())
   
-  # Sol
-  feed_name = 'msl-sol%d-feed' % sol
-  r.zadd(feed_name, now, storeobj)
-  r.sadd('msl-feeds', feed_name)
-  r.set(feed_name + '-name', 'Latest Images from MSL Taken on Sol %d' % sol)
-  
   if not isThumb:
     # All Feed No Thumbs
     r.zadd('msl-all-feed-nothumb', now, storeobj)
@@ -44,18 +38,10 @@ def add_image(sol, instrument, isThumb, storeobj):
     r.zadd(feed_name, now, storeobj)
     r.sadd('msl-feeds', feed_name)
     r.set(feed_name + '-name', 'Latest Images from %s on MSL - Full Resolution Images Only' % str(instrument).split('(')[0].strip())
-  
-    # Sol
-    feed_name = 'msl-sol%d-feed-nothumb' % sol
-    r.zadd(feed_name, now, storeobj)
-    r.sadd('msl-feeds', feed_name)
-    r.set(feed_name + '-name', 'Latest Images from MSL Taken on Sol %d - Full Resolution Images Only' % sol)
 
-#data =  json.loads(open('cache.json', 'r').read())
 
 scraper = nasa.MSL_Images()
 data    = scraper.get_images()
-
 
 # Go through data
 for sol_num, sol in enumerate(data['sols']):

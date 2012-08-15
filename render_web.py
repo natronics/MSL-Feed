@@ -5,10 +5,11 @@ import config
 
 
 def render_front_page():
-  feeds = models.get_feeds()
+  main_feeds = models.get_main_feeds()
+  inst_feeds = models.get_inst_feeds()
   peek  = models.get_latest_3()
   home = open(config.render_location + 'index.html', 'w')
-  home.write(views.front_page(feeds, peek))
+  home.write(views.front_page(main_feeds, inst_feeds, peek))
 
 def render_feed_index():
   feeds = models.get_feeds()
@@ -25,6 +26,11 @@ def render_all_feeds():
     feed_file = open(config.render_location + config.feeds_location + feed_name + ".xml", 'w')
     feed_file.write(views.render_feed_xml(feed, items))
 
+def render_about_page():
+  about_file = open(config.render_location + "about.html", "w")
+  about_file.write(views.render_about_page())
+  
 render_front_page()
 render_feed_index()
 render_all_feeds()
+render_about_page()

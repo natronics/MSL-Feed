@@ -14,6 +14,23 @@ def get_feeds():
     feed_data.append({"feed": feed, "title": meta['title'], "updated": meta['updated']})
   return feed_data
 
+def get_main_feeds():
+  feed_data = []
+  feeds = ['msl-all-feed-nothumb', 'msl-all-feed']
+  for feed in feeds:
+    meta = get_feed_metadata(feed)
+    feed_data.append({"feed": feed, "title": meta['title'], "updated": meta['updated']})
+  return feed_data
+
+def get_inst_feeds():
+  feed_data = []
+  feeds = r.smembers('msl-feeds')
+  for feed in feeds:
+    if feed not in ['msl-all-feed-nothumb', 'msl-all-feed']:
+      meta = get_feed_metadata(feed)
+      feed_data.append({"feed": feed, "title": meta['title'], "updated": meta['updated']})
+  return feed_data
+
 def get_feed(feed):
   data = r.zrevrange(feed, 0, 30, withscores=True)
 

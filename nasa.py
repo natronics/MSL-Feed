@@ -1,6 +1,7 @@
 from BeautifulSoup import BeautifulSoup
 import urllib2
 import datetime
+import math
 
 class MSL_Images():
   """Class to get images from NASA's MSL raw data pages. Call get_images() for json output"""
@@ -11,18 +12,41 @@ class MSL_Images():
   def __init__(self, vebose=False):
     self.verbose = vebose
   
+  def tosol(self):
+    now = datetime.datetime.now()
+    
+    # Calculate MSD
+    # MSD = (seconds since January 6, 2000 00:00:00 UTC)/88775.244 + 44795.9998 
+    # Mars epoch in local time (+8)
+    epoch = datetime.datetime(2000,1,6,8,0,0)
+    s     = ((now - epoch).days*86400) + (now - epoch).seconds
+    MSD   = (s/88775.244) + 44795.9998
+    
+    # Calculate number of Sols since MSL landing
+    # Landing Time: 49269 05:50:16
+    sol = MSD - 49269.2432411704
+    sol = sol + 1  # for sol 0
+    sol = int(math.ceil(sol))
+    
+    return sol
+  
   def get_images(self):
     sols = []
     data = {}
-    for sol in range(10):
-      print "getting sol %d" % sol
-      
-      sol_data = self.get_images_from_sol(sol)
-      if not sol_data:
-        print "404, finished at sol %d" % (sol - 1)
-        break
-      else:
-        sols.append(sol_data)
+    
+    # Get current Sol
+    sol = self.tosol()
+    
+    # Go back one Mars fortnight
+    for sol in range(sol-14, sol+1):
+      if sol >=0:
+        print "getting sol %d" % sol
+        
+        sol_data = self.get_images_from_sol(sol)
+        if not sol_data:
+          print "sol %d 404" % sol
+        else:
+          sols.append(sol_data)
     
     data["sols"] = sols
     return data
@@ -91,7 +115,7 @@ class MSL_Images():
           caption = cell.find('div', { "class" : "RawImageCaption" })
           thumbnail = True
           # this is where it says "thumbnail" or "full"
-          if "full" in caption.contents[2]:
+          if "full" in caption.contents[2] or "subframe" in caption.contents[2]:
             thumbnail = False    
           if self.verbose:
             print caption.contents[2],
