@@ -110,7 +110,7 @@ def front_page(main_feeds, inst_feeds, peekimg):
   <div id="header">
     <div class="container">
       <h1>Mars Science Laboratory RSS Feeds</h1>
-      <a href="/about" class="btn btn-info" >About</a>
+      <a href="/about.html" class="btn btn-info" >About</a>
     </div>
   </div>
 
