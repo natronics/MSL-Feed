@@ -51,15 +51,16 @@ for sol_num, sol in enumerate(data['sols']):
       image_id = image['rawid']
       nasatime = image["datetime"]
       thumb    = image['thumb']
-      uri      = image['uri']
+      #uri      = image['uri']
       
       # Test if we've seen this image before
       # if not, add it to redis database of images and feeds
       if not r.sismember('msl-images', image_id):
         
+        uri = scraper.get_image_uri(image_id)
         obj = json.dumps({"rawid": image_id, "nasatime": nasatime, "instrument": inst_name, "uri": uri})
         print "new image!!!",
-        print sol_num, inst_name, thumb, obj
+        print sol_num, inst_name, uri
         
         # let us know if we've seen it before
         r.sadd('msl-images', image_id)

@@ -60,7 +60,7 @@ class MSL_Images():
       soup = BeautifulSoup(page)
     except:
       if self.verbose:
-        print "404, no sol data"
+        print "sol lookup failed"
       return None
 
     if self.verbose:
@@ -71,12 +71,8 @@ class MSL_Images():
     images      = []
     
     # Table based layout!
-    # Grab the table cell with the main content
-    # Broken as of Aug 14
-    #content     =  soup.find('td', { "class" : "pageContent" })
-
-    # The second table is the list of images
-    # apparently the table is table 5. there is no semantics to help here
+    # The fifth table is the list of images
+    # there are no semantics to help here
     image_table =  soup.findAll('table')[5]
 
     for row in image_table.findAll('tr'):
@@ -103,24 +99,14 @@ class MSL_Images():
           if self.verbose:
             print raw_id,
           
-          # URL
-          # Get the image url and remove thumbnail
-          image = cell.find('img')
-          src   = image['src']
-          # test for thumbnail
-          if "-thm.jpg" in src:
-            src = src[0:-8] + ".JPG"
-          if self.verbose:
-            print src,
-          
-          # caption
+          # caption, this is where it says "thumbnail" or "full"
           caption = cell.find('div', { "class" : "RawImageCaption" })
+          caption = "".join([str(x) for x in caption.contents]) 
           thumbnail = True
-          # this is where it says "thumbnail" or "full"
-          if "full" in caption.contents[2] or "subframe" in caption.contents[2]:
+          if "full" in caption or "subframe" in caption:
             thumbnail = False    
           if self.verbose:
-            print caption.contents[2],
+            print caption, thumbnail
           
           # image date time
           date = cell.find('div', { "class" : "RawImageUTC" })
@@ -129,9 +115,27 @@ class MSL_Images():
           if self.verbose:
             print dt
           
-          images.append({"rawid": raw_id, "thumb": thumbnail, "uri": src, "datetime": dt.isoformat()})
+          images.append({"rawid": raw_id, "thumb": thumbnail, "datetime": dt.isoformat()})
           
     if len(images) > 0:
       instruments.append({"instrument_name": instrument_name, "images": images})
 
     return instruments
+
+  def get_image_uri(self, rawid):
+  
+    url  = self.baseurl + '?rawid=%s' % rawid
+    try:
+      page = urllib2.urlopen(url)
+      soup = BeautifulSoup(page)
+    except:
+      if self.verbose:
+        print "404, image not found"
+      return None
+
+    if self.verbose:
+      print "opening", url
+    
+    uri_link =  soup('a',text='Full Resolution')[0].parent
+    return uri_link["href"]
+    
