@@ -1,7 +1,76 @@
 from BeautifulSoup import BeautifulSoup
 import urllib2
 import datetime
+import time
 import math
+
+
+MSL_KEY = {"NLA":
+    { 
+      "name":       "Navcam: Left A", 
+      "ext":        ".JPG", 
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/ncam/"
+    }
+  , "NRA": 
+    { 
+      "name": "Navcam: Right A", 
+      "ext": ".JPG", 
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/ncam/"
+    }
+  , "CR0":
+    { 
+      "name": "ChemCam: Remote Micro-Imager ", 
+      "ext": ".JPG", 
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/ccam/"
+    }
+  , "MR":
+    { 
+      "name": "MastCam Right", 
+      "ext": ".jpg", 
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/msss/%05d/mcam/"
+    }
+  , "ML":
+    {
+      "name": "MastCam Left", 
+      "ext": ".jpg", 
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/msss/%05d/mcam/"
+    }
+  , "MH": 
+    {
+      "name": "Mars Hand Lens Imager (MAHLI)", 
+      "ext": ".jpg", 
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/msss/%05d/mhli/"
+    }
+  , "MD":
+    {
+      "name": "Mars Descent Imager (MARDI)", 
+      "ext": ".jpg",
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/msss/%05d/mrdi/"
+    }
+  , "FLA": 
+    {
+      "name": "Front Hazcam: Left A", 
+      "ext": ".JPG",
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/fcam/"
+    }
+  , "FRA": 
+    { 
+      "name": "Front Hazcam: Right A", 
+      "ext": ".JPG",
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/fcam/"
+    }
+  , "RRA":
+    {
+      "name": "Rear Hazcam: Right A", 
+      "ext": ".JPG",
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/rcam/"
+    }
+  , "RLA":
+    {
+      "name": "Rear Hazcam: Left A", 
+      "ext": ".JPG",
+      "url_prefix": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/%05d/opgs/edr/rcam/"
+    }}
 
 class MSL_Images():
   """Class to get images from NASA's MSL raw data pages. Call get_images() for json output"""
@@ -31,99 +100,71 @@ class MSL_Images():
     return sol
   
   def get_images(self):
-    sols = []
+    """Gets all images from the last two weeks of sols on Mars"""
     data = {}
     
     # Get current Sol
     sol = self.tosol()
     
-    # Go back one Mars fortnight
+    # Go back one Mars fortnight through tosol
     for sol in range(sol-14, sol+1):
-      if sol >=0:
-        print "getting sol %d" % sol
-        
-        sol_data = self.get_images_from_sol(sol)
-        if not sol_data:
-          print "sol %d 404" % sol
-        else:
-          sols.append(sol_data)
-    
-    data["sols"] = sols
+      print "getting sol %d" % sol
+      # get on sol of images
+      sol_data = self.get_images_from_sol(sol)
+      if not sol_data:
+        print "sol %d not retrieved" % sol
+      else:
+        now = datetime.datetime.now()
+        now = int(time.mktime(now.timetuple()))
+        data["%d"%sol] = {"images": sol_data, "time": now}
+      time.sleep(1)
+      
+          
     return data
   
   def get_images_from_sol(self, sol):
- 
-    # get page for sol
+    """Scrapes JPL's site for all images in a given sol"""
+    
+    # webpage for given sol
     url  = self.baseurl + '?s=%d' % sol
+    
+    if self.verbose:
+      print "opening", url
+    
+    # ignore any network errors with try: catch
     try:
       page = urllib2.urlopen(url)
       soup = BeautifulSoup(page)
     except:
       if self.verbose:
-        print "sol lookup failed"
+        print "sol url failed to open"
       return None
-
-    if self.verbose:
-      print "opening", url
-
+    
     # Objects to dump into json later
-    instruments = []
     images      = []
     
     # Table based layout!
     # The fifth table is the list of images
-    # there are no semantics to help here
-    image_table =  soup.findAll('table')[5]
+    # there are no semantics to help here :/
+    cells =  soup.findAll('table')[5].findAll('td')
 
-    for row in image_table.findAll('tr'):
-      cells = row.findAll('td')
-      header = row.findAll('td', { "class" : "CameraName" })
-      
-      # See if we're in a header
-      if len(header) > 0:
-        instrument_name = header[0].string
-        if self.verbose:
-          print instrument_name
-        
-        # there is data from the last instrument to push!
-        if len(images) > 0:
-          instruments.append({"instrument_name": instrument_name, "images": images})
-          images = []
-          
-      else:
-        #Not in a header, we expect images:
-        for cell in cells:
-          # the link has the raw id
-          link = cell.find('a')
-          raw_id = link['href'][9:-4]  # scrape away the query string crap
-          if self.verbose:
-            print raw_id,
-          
-          # caption, this is where it says "thumbnail" or "full"
-          caption = cell.find('div', { "class" : "RawImageCaption" })
-          caption = "".join([str(x) for x in caption.contents]) 
-          thumbnail = True
-          if "full" in caption or "subframe" in caption:
-            thumbnail = False    
-          if self.verbose:
-            print caption, thumbnail
-          
-          # image date time
-          date = cell.find('div', { "class" : "RawImageUTC" })
-          dt_string = date.string[0:-9]
-          dt   = datetime.datetime.strptime(dt_string, "%Y-%m-%d %H:%M:%S")
-          if self.verbose:
-            print dt
-          
-          images.append({"rawid": raw_id, "thumb": thumbnail, "datetime": dt.isoformat()})
-          
-    if len(images) > 0:
-      instruments.append({"instrument_name": instrument_name, "images": images})
+    for cell in cells:
+      link = cell.find('a')
+      if link:
+        image = link.find('img')
+        if image:
+          # MSL images are inside an anchor inside a table cell. So we assume
+          # this is a mars image. We get the image url and scrape the image id
+          # from it
+          thumbnail_url = image['src']
+          image_id      = thumbnail_url.split('/')[-1][0:-8] 
+          images.append(image_id)
 
-    return instruments
+    return images
 
   def get_image_uri(self, rawid):
-  
+    """depreciated"""
+    
     url  = self.baseurl + '?rawid=%s' % rawid
     try:
       page = urllib2.urlopen(url)

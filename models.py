@@ -32,23 +32,21 @@ def get_inst_feeds():
   return feed_data
 
 def get_feed(feed):
-  data = r.zrevrange(feed, 0, 30, withscores=True)
-
+  data = r.zrevrange(feed, 0, 100, withscores=True)
   feed_data = []
 
   for image in data:
     image_data  = json.loads(image[0])
     pub         = int(image[1])
     pub_dt      = datetime.datetime.fromtimestamp(pub).isoformat()
-    rawid       = image_data["rawid"]
     
     pub_title   = datetime.datetime.fromtimestamp(pub).strftime("%B %d")
-    instrument  = image_data["instrument"].split('(')[0].strip()
-    url         = image_data["uri"]
+    instrument  = image_data["instname"]
+    url         = image_data["url"]
     title       = "New Image uploaded on %s from %s" % (pub_title, instrument)
     title       = str(title).replace("&", "&amp;")
 
-    feed_data.append({"url": url, "id": rawid, "pub": pub_dt, "title": title})
+    feed_data.append({"url": url, "id": image_data["id"], "pub": pub_dt, "title": title})
 
   return feed_data
 
@@ -67,5 +65,5 @@ def get_latest_3():
   urls = []
   for image in data:
     image_data  = json.loads(image)
-    urls.append( image_data["uri"] )
+    urls.append( image_data["url"] )
   return urls

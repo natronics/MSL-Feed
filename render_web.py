@@ -3,7 +3,6 @@ import models
 import views
 import config
 
-
 def render_front_page():
   main_feeds = models.get_main_feeds()
   inst_feeds = models.get_inst_feeds()
@@ -34,3 +33,4 @@ render_front_page()
 render_feed_index()
 render_all_feeds()
 render_about_page()
+
