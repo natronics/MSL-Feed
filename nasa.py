@@ -76,7 +76,7 @@ class MSL_Images():
   """Class to get images from NASA's MSL raw data pages. Call get_images() for json output"""
 
   # setup
-  baseurl  = "http://mars.jpl.nasa.gov/msl/multimedia/raw/"
+  baseurl  = "http://mars.jpl.nasa.gov/msl/admin/modules/multimedia/module/inc_ListImages_Raw.cfm"
   
   def __init__(self, vebose=False):
     self.verbose = vebose
@@ -142,11 +142,11 @@ class MSL_Images():
     
     # Objects to dump into json later
     images      = []
-    
+
     # Table based layout!
     # The fifth table is the list of images
     # there are no semantics to help here :/
-    cells =  soup.findAll('table')[5].findAll('td')
+    cells =  soup.findAll('table')[0].findAll('td')
 
     for cell in cells:
       link = cell.find('a')
